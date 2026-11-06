@@ -1,881 +1,139 @@
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>F1 Tech Hub | Garaje & Telemetría de Monoplazas</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VELOCIDAD | Autos Deportivos</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+  body { background: #0a0a0a; color: white; }
 
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  header { background: #111; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+  header h1 { color: #e10600; font-size: 28px; letter-spacing: 2px; }
+  header h1 span { color: white; }
+  nav a { color: white; text-decoration: none; margin-left: 25px; font-weight: bold; }
+  nav a:hover { color: #e10600; }
+
+  .hero {
+    height: 85vh;
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1600') center/cover;
+    display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px;
+  }
+  .hero h2 { font-size: 60px; line-height: 1; }
+  .hero h2 b { color: #e10600; }
+  .hero p { margin: 20px 0; font-size: 18px; color: #ddd; max-width: 600px; }
+  .btn { background: #e10600; color: white; padding: 14px 30px; border: none; border-radius: 30px; font-size: 16px; font-weight: bold; cursor: pointer; text-decoration: none; }
+  .btn:hover { background: #ff1a1a; transform: scale(1.05); }
+
+  .seccion { padding: 60px 40px; max-width: 1200px; margin: auto; }
+  .seccion h3 { font-size: 32px; margin-bottom: 10px; }
+  .seccion > p { color: #aaa; margin-bottom: 30px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+  .card { background: #1a1a1a; border-radius: 15px; overflow: hidden; transition: 0.3s; }
+  .card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(225,6,0,0.3); }
+  .card img { width: 100%; height: 200px; object-fit: cover; }
+  .card-body { padding: 20px; }
+  .card-body h4 { font-size: 22px; margin-bottom: 8px; }
+  .card-body p { color: #bbb; font-size: 14px; line-height: 1.5; margin-bottom: 15px; }
+  .specs { display: flex; gap: 10px; flex-wrap: wrap; }
+  .specs span { background: #2a2a2a; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+  .precio { color: #e10600; font-size: 20px; font-weight: bold; margin-top: 15px; }
+
+  .comparativa { width: 100%; border-collapse: collapse; margin-top: 20px; background: #1a1a1a; border-radius: 10px; overflow: hidden; }
+  .comparativa th { background: #e10600; padding: 15px; text-align: left; }
+  .comparativa td { padding: 15px; border-bottom: 1px solid #333; }
+
+  .form { background: #1a1a1a; padding: 30px; border-radius: 15px; max-width: 500px; margin: auto; }
+  .form input, .form select { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; background: #2a2a2a; color: white; }
   
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-  <!-- Google Font: Titillium Web & JetBrains Mono -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Titillium+Web:ital,wght@0,300;0,400;0,700;0,900;1,700&display=swap" rel="stylesheet">
-
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['"Titillium Web"', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-          },
-          colors: {
-            f1: {
-              red: '#E10600',
-              dark: '#0B0D12',
-              card: '#12151F',
-              border: '#222736',
-              accent: '#00F0FF'
-            }
-          }
-        }
-      }
-    }
-  </script>
-
-  <style>
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #0B0D12;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #222736;
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #E10600;
-    }
-
-    .carbon-bg {
-      background-color: #0b0d12;
-      background-image: radial-gradient(#e10600 0.75px, transparent 0.75px), radial-gradient(#222736 0.75px, #0b0d12 0.75px);
-      background-size: 30px 30px;
-      background-position: 0 0, 15px 15px;
-      background-opacity: 0.1;
-    }
-
-    .clip-slanted {
-      clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
-    }
-
-    .glow-red {
-      box-shadow: 0 0 25px -5px rgba(225, 6, 0, 0.4);
-    }
-  </style>
+  footer { text-align: center; padding: 30px; background: #111; color: #777; margin-top: 40px; }
+</style>
 </head>
-<body class="bg-f1-dark text-gray-100 font-sans selection:bg-f1-red selection:text-white carbon-bg min-h-screen flex flex-col justify-between">
+<body>
 
-  <!-- ==================== HEADER / NAV ==================== -->
-  <header class="sticky top-0 z-40 bg-f1-dark/95 backdrop-blur-md border-b border-f1-border">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      
-      <!-- Logo -->
-      <div class="flex items-center gap-3">
-        <a href="#" class="flex items-center gap-2">
-          <span class="bg-f1-red text-white font-black text-xl italic px-2.5 py-0.5 rounded tracking-tighter shadow-lg shadow-f1-red/30">
-            F1
-          </span>
-          <span class="text-white font-black italic tracking-wider text-lg">TECH<span class="text-f1-red">HUB</span></span>
-        </a>
-        <span class="hidden md:inline-block border-l border-gray-700 pl-3 text-xs font-mono text-gray-400">
-          REGULATION 2024 // TELEMETRY DATABASE
-        </span>
-      </div>
+<header>
+  <h1>VELO<span>CIDAD</span></h1>
+  <nav>
+    <a href="#autos">Autos</a>
+    <a href="#comparar">Comparar</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+</header>
 
-      <!-- Navigation Links -->
-      <nav class="hidden md:flex items-center gap-6 text-sm font-semibold text-gray-300">
-        <a href="#garaje" class="hover:text-f1-red transition-colors flex items-center gap-2">
-          <i class="fa-solid fa-car-side text-xs"></i> Garaje
-        </a>
-        <a href="#comparador" class="hover:text-f1-red transition-colors flex items-center gap-2">
-          <i class="fa-solid fa-code-compare text-xs"></i> Comparador
-        </a>
-        <a href="#motor" class="hover:text-f1-red transition-colors flex items-center gap-2">
-          <i class="fa-solid fa-bolt text-xs"></i> Motor Híbrido
-        </a>
-      </nav>
+<section class="hero">
+  <h2>POTENCIA<br><b>SIN LÍMITES</b></h2>
+  <p>Los autos deportivos más rápidos, potentes y deseados del mundo. Elige tu favorito y siente la adrenalina.</p>
+  <a href="#autos" class="btn">Ver Autos ↓</a>
+</section>
 
-      <!-- Action Button -->
-      <a href="#comparador" class="bg-f1-red hover:bg-red-700 text-white font-bold text-xs uppercase px-4 py-2 rounded-lg transition-all flex items-center gap-2 shadow-lg shadow-f1-red/20">
-        <i class="fa-solid fa-sliders"></i>
-        <span>Comparar Autos</span>
-      </a>
+<section class="seccion" id="autos">
+  <h3>🔥 Top Autos Deportivos</h3>
+  <p>Los 3 reyes de la velocidad en 2026</p>
+  <div class="grid">
 
-    </div>
-  </header>
-
-  <!-- ==================== HERO SECTION ==================== -->
-  <section class="relative overflow-hidden border-b border-f1-border py-12 lg:py-20 px-4">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-      
-      <!-- Hero Left Text -->
-      <div class="lg:col-span-7 space-y-6">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-950/40 border border-f1-red/40 text-f1-red text-xs font-mono font-bold tracking-wider uppercase">
-          <span class="w-2 h-2 rounded-full bg-f1-red animate-ping"></span>
-          Telemetría en Vivo & Especificaciones FIA
-        </div>
-        
-        <h1 class="text-4xl sm:text-6xl font-black italic tracking-tight text-white uppercase leading-none">
-          MONOPLAZAS AL LÍMITE DE LA <br>
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-f1-red via-red-500 to-orange-500">
-            FÍSICA Y LA TECNOLOGÍA
-          </span>
-        </h1>
-
-        <p class="text-gray-400 text-sm sm:text-base max-w-2xl leading-relaxed">
-          Bienvenido al centro técnico definitivo de la Fórmula 1. Explora el comportamiento aerodinámico, el rendimiento de las Unidades de Potencia V6 Turbo Híbridas y compara los autos más veloces del planeta.
-        </p>
-
-        <!-- Dynamic Specs Counters -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4">
-          <div class="bg-f1-card p-3.5 rounded-xl border border-f1-border">
-            <div class="text-gray-400 text-xs font-mono uppercase flex items-center gap-1.5">
-              <i class="fa-solid fa-bolt text-f1-red"></i> Potencia Max
-            </div>
-            <div class="text-2xl font-black text-white mt-1">1,040 <span class="text-xs font-normal text-gray-400">HP</span></div>
-          </div>
-
-          <div class="bg-f1-card p-3.5 rounded-xl border border-f1-border">
-            <div class="text-gray-400 text-xs font-mono uppercase flex items-center gap-1.5">
-              <i class="fa-solid fa-gauge-high text-f1-accent"></i> Vel. Punta
-            </div>
-            <div class="text-2xl font-black text-white mt-1">355 <span class="text-xs font-normal text-gray-400">KM/H</span></div>
-          </div>
-
-          <div class="bg-f1-card p-3.5 rounded-xl border border-f1-border">
-            <div class="text-gray-400 text-[#00FF66] text-xs font-mono uppercase flex items-center gap-1.5">
-              <i class="fa-solid fa-[#00FF66] fa-weight-hanging"></i> Peso Mínimo
-            </div>
-            <div class="text-2xl font-black text-white mt-1">798 <span class="text-xs font-normal text-gray-400">KG</span></div>
-          </div>
-
-          <div class="bg-f1-card p-3.5 rounded-xl border border-f1-border">
-            <div class="text-gray-400 text-yellow-400 text-xs font-mono uppercase flex items-center gap-1.5">
-              <i class="fa-solid fa-[#FFCC00] fa-stopwatch"></i> 0-100 KM/H
-            </div>
-            <div class="text-2xl font-black text-white mt-1">2.4 <span class="text-xs font-normal text-gray-400">SEG</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Hero Right Preview Card -->
-      <div class="lg:col-span-5 relative">
-        <div class="bg-gradient-to-br from-[#181C2A] to-f1-card p-6 rounded-2xl border border-f1-border shadow-2xl relative overflow-hidden group">
-          <div class="absolute top-0 right-0 bg-f1-red text-white text-[10px] font-black px-3 py-1 uppercase tracking-widest rounded-bl-lg">
-            Campeón del Mundo
-          </div>
-
-          <span class="text-xs font-mono text-f1-red font-bold">RED BULL RACING</span>
-          <h2 class="text-3xl font-black italic text-white mb-3">RB20</h2>
-
-          <div class="relative h-48 rounded-xl overflow-hidden border border-f1-border my-4 bg-black/40">
-            <img 
-              src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1000&q=80" 
-              alt="Red Bull RB20" 
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-            <div class="absolute inset-0 bg-gradient-to-t from-f1-card via-transparent to-transparent opacity-80"></div>
-          </div>
-
-          <div class="space-y-2 text-xs">
-            <div class="flex justify-between font-mono">
-              <span class="text-gray-400">Efectividad DRS</span>
-              <span class="text-f1-red font-bold">9.9 / 10</span>
-            </div>
-            <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
-              <div class="bg-f1-red h-full rounded-full" style="width: 99%"></div>
-            </div>
-          </div>
-
-          <button 
-            onclick="openCarModal('rb20')"
-            class="mt-6 w-full bg-f1-red hover:bg-red-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg shadow-f1-red/30"
-          >
-            <span>Ver Ficha Completa RB20</span>
-            <i class="fa-solid fa-chevron-right text-xs"></i>
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ==================== MONOPOSSO SHOWROOM (GARAJE) ==================== -->
-  <section id="garaje" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    
-    <!-- Section Title -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-      <div>
-        <div class="text-xs font-mono text-f1-red font-bold uppercase tracking-widest">Catálogo Oficial</div>
-        <h2 class="text-3xl font-black italic text-white uppercase">GARAJE DE MONOPLAZAS 2024</h2>
-      </div>
-
-      <!-- Search & Filter Controls -->
-      <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-        <!-- Search Input -->
-        <div class="relative flex-grow sm:w-64">
-          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
-          <input 
-            type="text" 
-            id="searchInput" 
-            placeholder="Buscar auto, equipo o piloto..."
-            class="w-full bg-f1-card border border-f1-border rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-f1-red transition-colors"
-            onkeyup="filterCars()"
-          >
-        </div>
-
-        <!-- Engine Select Filter -->
-        <select 
-          id="engineFilter" 
-          onchange="filterCars()"
-          class="bg-f1-card border border-f1-border text-gray-200 text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-f1-red font-semibold cursor-pointer"
-        >
-          <option value="ALL">Todos los Motores</option>
-          <option value="Honda">Motor Honda RBPT</option>
-          <option value="Ferrari">Motor Ferrari</option>
-          <option value="Mercedes">Motor Mercedes-AMG</option>
-        </select>
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800" alt="BMW M4">
+      <div class="card-body">
+        <h4>BMW M4 Competition</h4>
+        <p>El equilibrio perfecto entre lujo y deportividad. Tracción trasera y un sonido que enamora.</p>
+        <div class="specs"><span>510 HP</span><span>0-100: 3.9s</span><span>290 km/h</span></div>
+        <div class="precio">$2,150,000 MXN</div>
       </div>
     </div>
 
-    <!-- Cards Grid -->
-    <div id="carsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Generated via JS -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800" alt="Porsche 911">
+      <div class="card-body">
+        <h4>Porsche 911 GT3</h4>
+        <p>El ícono alemán. Nacido para la pista, hecho para la calle. Precisión pura en cada curva.</p>
+        <div class="specs"><span>510 HP</span><span>0-100: 3.4s</span><span>320 km/h</span></div>
+        <div class="precio">$4,800,000 MXN</div>
+      </div>
     </div>
-  </section>
 
-  <!-- ==================== FRONT-TO-FRONT COMPARATOR ==================== -->
-  <section id="comparador" class="bg-[#0f121b] border-y border-f1-border py-16 px-4">
-    <div class="max-w-7xl mx-auto">
-      
-      <div class="text-center max-w-2xl mx-auto mb-10">
-        <div class="text-xs font-mono text-f1-red font-bold uppercase tracking-widest">Cara a Cara</div>
-        <h2 class="text-3xl font-black italic text-white uppercase">COMPARADOR DE RENDIMIENTO</h2>
-        <p class="text-gray-400 text-xs sm:text-sm mt-2">
-          Selecciona dos monoplazas para analizar sus parámetros teleométricos clave.
-        </p>
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800" alt="Lamborghini">
+      <div class="card-body">
+        <h4>Lamborghini Huracán</h4>
+        <p>Motor V10 aspirado. No necesitas música cuando tienes este escape rugiendo atrás de ti.</p>
+        <div class="specs"><span>640 HP</span><span>0-100: 2.9s</span><span>325 km/h</span></div>
+        <div class="precio">$6,500,000 MXN</div>
       </div>
-
-      <!-- Selectors -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <!-- Car A Selector -->
-        <div class="bg-f1-card p-4 rounded-xl border border-blue-500/40">
-          <label class="block text-xs font-mono text-blue-400 font-bold uppercase mb-2">Monoplaza A</label>
-          <select 
-            id="carASelect" 
-            onchange="updateComparison()"
-            class="w-full bg-f1-dark border border-gray-700 text-white rounded-lg p-2.5 text-sm font-bold focus:outline-none focus:border-blue-500"
-          >
-            <!-- JS Populated -->
-          </select>
-        </div>
-
-        <!-- Car B Selector -->
-        <div class="bg-f1-card p-4 rounded-xl border border-f1-red/40">
-          <label class="block text-xs font-mono text-f1-red font-bold uppercase mb-2">Monoplaza B</label>
-          <select 
-            id="carBSelect" 
-            onchange="updateComparison()"
-            class="w-full bg-f1-dark border border-gray-700 text-white rounded-lg p-2.5 text-sm font-bold focus:outline-none focus:border-f1-red"
-          >
-            <!-- JS Populated -->
-          </select>
-        </div>
-      </div>
-
-      <!-- Comparison Bars Container -->
-      <div class="bg-f1-card rounded-2xl border border-f1-border p-6 shadow-xl space-y-6" id="comparisonBars">
-        <!-- JS Rendered Comparison Bars -->
-      </div>
-
     </div>
-  </section>
 
-  <!-- ==================== V6 HYBRID ENGINE BREAKDOWN ==================== -->
-  <section id="motor" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <div class="bg-gradient-to-br from-f1-card to-[#0d1017] rounded-3xl p-6 lg:p-10 border border-f1-border">
-      
-      <div class="max-w-3xl mb-8">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-950/40 border border-blue-500/30 text-blue-400 text-xs font-mono mb-3 font-bold">
-          <i class="fa-solid fa-microchip"></i> UNIDAD DE POTENCIA HÍBRIDA (PU)
-        </div>
-        <h2 class="text-3xl font-black italic text-white uppercase">ARQUITECTURA DE MOTOR F1</h2>
-        <p class="text-gray-400 text-sm mt-2 leading-relaxed">
-          Los monoplazas combinan un motor térmico de combustión interna con dos motores generadores eléctricos (MGU-K y MGU-H) logrando más de 1,000 HP con una eficiencia térmica superior al 50%.
-        </p>
-      </div>
-
-      <!-- Component Selector Tabs & Details -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        
-        <!-- Left Buttons -->
-        <div class="lg:col-span-5 space-y-3" id="engineComponentTabs">
-          <!-- JS Rendered Buttons -->
-        </div>
-
-        <!-- Right Component Detail Box -->
-        <div class="lg:col-span-7 bg-f1-dark p-6 sm:p-8 rounded-2xl border border-f1-border min-h-[260px] flex flex-col justify-between" id="engineComponentDisplay">
-          <!-- JS Rendered Content -->
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ==================== MODAL DE TELEMETRÍA ==================== -->
-  <div id="carModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-    <div class="bg-f1-card border border-f1-border rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
-      
-      <!-- Modal Sticky Header -->
-      <div class="sticky top-0 bg-f1-card/95 backdrop-blur-md p-6 border-b border-f1-border flex items-center justify-between z-10">
-        <div>
-          <span id="modalTeam" class="text-xs font-mono text-f1-red font-bold uppercase tracking-widest">ESCUDERÍA</span>
-          <h2 id="modalName" class="text-3xl font-black italic text-white">AUTO</h2>
-        </div>
-        <button onclick="closeCarModal()" class="w-9 h-9 rounded-full bg-f1-dark hover:bg-gray-800 text-gray-400 hover:text-white flex items-center justify-center transition-colors">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
-      </div>
-
-      <!-- Modal Body -->
-      <div class="p-6 space-y-6">
-        
-        <!-- Image Banner -->
-        <div class="relative h-64 rounded-2xl overflow-hidden border border-f1-border bg-black/40">
-          <img id="modalImage" src="" alt="Auto F1" class="w-full h-full object-cover">
-          <div class="absolute inset-0 bg-gradient-to-t from-f1-card via-transparent to-transparent opacity-90"></div>
-          
-          <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-            <div>
-              <span class="text-[10px] font-mono text-gray-400 block uppercase">Pilotos Oficiales</span>
-              <span id="modalDrivers" class="text-white font-bold text-sm">--</span>
-            </div>
-            <div class="text-right">
-              <span class="text-[10px] font-mono text-gray-400 block uppercase">Motorización</span>
-              <span id="modalEngine" class="text-yellow-400 font-mono font-bold text-sm">--</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Description -->
-        <p id="modalDescription" class="text-gray-300 text-sm leading-relaxed">
-          --
-        </p>
-
-        <!-- Technical Specs Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-          <div class="bg-f1-dark p-3 rounded-xl border border-f1-border">
-            <span class="text-gray-500 font-mono uppercase block text-[10px]">Potencia Max</span>
-            <span id="modalHp" class="text-lg font-black text-white">-- HP</span>
-          </div>
-
-          <div class="bg-f1-dark p-3 rounded-xl border border-f1-border">
-            <span class="text-gray-500 font-mono uppercase block text-[10px]">Velocidad Punta</span>
-            <span id="modalSpeed" class="text-lg font-black text-white">-- km/h</span>
-          </div>
-
-          <div class="bg-f1-dark p-3 rounded-xl border border-f1-border">
-            <span class="text-gray-500 font-mono uppercase block text-[10px]">Aceleración 0-100</span>
-            <span id="modalAccel" class="text-lg font-black text-white">-- s</span>
-          </div>
-
-          <div class="bg-f1-dark p-3 rounded-xl border border-f1-border">
-            <span class="text-gray-500 font-mono uppercase block text-[10px]">Victorias 2024</span>
-            <span id="modalWins" class="text-lg font-black text-yellow-400">--</span>
-          </div>
-        </div>
-
-        <!-- Chassis & Power Unit Details -->
-        <div class="space-y-4 pt-2">
-          <h4 class="text-xs font-mono text-f1-red font-bold uppercase tracking-wider flex items-center gap-2">
-            <i class="fa-solid fa-layer-group"></i> Chasis & Estructura
-          </h4>
-          <p id="modalChassis" class="bg-f1-dark p-4 rounded-xl border border-f1-border text-xs text-gray-300 leading-relaxed font-mono">
-            --
-          </p>
-
-          <h4 class="text-xs font-mono text-f1-red font-bold uppercase tracking-wider flex items-center gap-2 pt-2">
-            <i class="fa-solid fa-sliders"></i> Detalles Telemétricos
-          </h4>
-          <div class="bg-f1-dark p-4 rounded-xl border border-f1-border space-y-3">
-            <div>
-              <div class="flex justify-between text-xs mb-1">
-                <span class="text-gray-400">Carga Aerodinámica (Downforce)</span>
-                <span id="modalDownforceVal" class="text-f1-accent font-mono font-bold">--</span>
-              </div>
-              <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
-                <div id="modalDownforceBar" class="bg-f1-accent h-full rounded-full" style="width: 0%"></div>
-              </div>
-            </div>
-
-            <div>
-              <div class="flex justify-between text-xs mb-1">
-                <span class="text-gray-400">Efectividad DRS</span>
-                <span id="modalDrsVal" class="text-f1-red font-mono font-bold">--</span>
-              </div>
-              <div class="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
-                <div id="modalDrsBar" class="bg-f1-red h-full rounded-full" style="width: 0%"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
   </div>
+</section>
 
-  <!-- ==================== FOOTER ==================== -->
-  <footer class="bg-f1-dark border-t border-f1-border py-10 px-4 mt-12">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-      
-      <div class="flex items-center gap-3">
-        <span class="bg-f1-red text-white font-black text-lg italic px-2 py-0.5 rounded">F1</span>
-        <span class="text-gray-400 text-xs font-mono">
-          F1 TECH HUB © 2024 - Todos los datos telemétricos son informativos y simulados.
-        </span>
-      </div>
+<section class="seccion" id="comparar">
+  <h3>⚡ Comparativa Rápida</h3>
+  <table class="comparativa">
+    <tr><th>Auto</th><th>HP</th><th>0-100 km/h</th><th>Velocidad Máx</th></tr>
+    <tr><td>BMW M4</td><td>510</td><td>3.9s</td><td>290 km/h</td></tr>
+    <tr><td>Porsche 911 GT3</td><td>510</td><td>3.4s</td><td>320 km/h</td></tr>
+    <tr><td>Lamborghini Huracán</td><td>640</td><td>2.9s</td><td>325 km/h</td></tr>
+  </table>
+</section>
 
-      <div class="flex gap-6 text-xs text-gray-400 font-semibold">
-        <a href="#garaje" class="hover:text-f1-red transition-colors">Garaje</a>
-        <a href="#comparador" class="hover:text-f1-red transition-colors">Comparador</a>
-        <a href="#motor" class="hover:text-f1-red transition-colors">Unidad de Potencia</a>
-      </div>
+<section class="seccion" id="contacto">
+  <h3 style="text-align:center;">¿Cuál es tu favorito?</h3>
+  <p style="text-align:center;">Déjanos tu correo y te mandamos el catálogo completo</p>
+  <form class="form" onsubmit="alert('¡Gracias! Te mandamos el catálogo'); return false;">
+    <input type="text" placeholder="Tu nombre" required>
+    <input type="email" placeholder="Tu correo" required>
+    <select>
+      <option>BMW M4 Competition</option>
+      <option>Porsche 911 GT3</option>
+      <option>Lamborghini Huracán</option>
+      <option>Otro</option>
+    </select>
+    <button class="btn" style="width:100%;">Quiero mi catálogo</button>
+  </form>
+</section>
 
-    </div>
-  </footer>
+<footer>
+  <p>© 2026 VELOCIDAD - Hecho en Puebla, México 🏁</p>
+</footer>
 
-  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
-  <script>
-    // ------------------------------------------------------------------
-    // DATABASE: F1 CARS 2024
-    // ------------------------------------------------------------------
-    const F1_CARS = [
-      {
-        id: 'rb20',
-        team: 'Red Bull Racing',
-        name: 'RB20',
-        driver: 'Max Verstappen / Sergio Pérez',
-        engine: 'Honda RBPTH002 V6 Turbo Hybrid',
-        engineBrand: 'Honda',
-        color: '#0600EF',
-        image: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=1000&q=80',
-        specs: {
-          horsepower: 1040,
-          weight: 798,
-          topSpeed: 355,
-          zeroToHundred: 2.4,
-          downforce: 9.9,
-          drs: 9.9,
-          wins: 19
-        },
-        chassis: 'Monocasco de fibra de carbono ultraligero con suspensión Pull-rod delantera y Push-rod trasera con canales de suelo venturi optimizados.',
-        description: 'El RB20 revolucionó la aerodinámica con entradas de aire verticales y pontones sumergidos, manteniendo el dominio absoluto en ritmo de carrera.'
-      },
-      {
-        id: 'sf24',
-        team: 'Scuderia Ferrari',
-        name: 'SF-24',
-        driver: 'Charles Leclerc / Carlos Sainz',
-        engine: 'Ferrari 066/12 V6 Turbo Hybrid',
-        engineBrand: 'Ferrari',
-        color: '#E10600',
-        image: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=1000&q=80',
-        specs: {
-          horsepower: 1035,
-          weight: 798,
-          topSpeed: 352,
-          zeroToHundred: 2.45,
-          downforce: 9.6,
-          drs: 9.4,
-          wins: 5
-        },
-        chassis: 'Estructura compuesta de panal de abeja en carbono. Modificación completa del tren trasero para reducir el desgaste de neumáticos.',
-        description: 'El monoplaza de Maranello resolvió la degradación excesiva de gomas del modelo anterior, destacando por su enorme tracción en tramos lentos.'
-      },
-      {
-        id: 'mcl38',
-        team: 'McLaren F1 Team',
-        name: 'MCL38',
-        driver: 'Lando Norris / Oscar Piastri',
-        engine: 'Mercedes-AMG F1 M15 E Performance',
-        engineBrand: 'Mercedes',
-        color: '#FF8000',
-        image: 'https://images.unsplash.com/photo-1541348263662-e082662d82da?auto=format&fit=crop&w=1000&q=80',
-        specs: {
-          horsepower: 1038,
-          weight: 798,
-          topSpeed: 350,
-          zeroToHundred: 2.42,
-          downforce: 9.8,
-          drs: 9.6,
-          wins: 6
-        },
-        chassis: 'Chasis de fibra de carbono McLaren con alerones flexiwings adaptativos y suspensión Push-rod delantera.',
-        description: 'La gran referencia técnica de la temporada. Excelente balance en curvas rápidas de media y alta velocidad en cualquier circuito.'
-      },
-      {
-        id: 'w15',
-        team: 'Mercedes-AMG Petronas',
-        name: 'W15 E Performance',
-        driver: 'Lewis Hamilton / George Russell',
-        engine: 'Mercedes-AMG F1 M15 E Performance',
-        engineBrand: 'Mercedes',
-        color: '#00D2BE',
-        image: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1000&q=80',
-        specs: {
-          horsepower: 1032,
-          weight: 798,
-          topSpeed: 353,
-          zeroToHundred: 2.44,
-          downforce: 9.3,
-          drs: 9.5,
-          wins: 3
-        },
-        chassis: 'Rediseño total abandonando el concepto zeropod. Posición del cockpit retrasada a petición de los pilotos.',
-        description: 'Un auto muy rápido en condiciones de baja temperatura de pista, con mejoras progresivas en la estabilidad del eje trasero.'
-      },
-      {
-        id: 'amr24',
-        team: 'Aston Martin Aramco',
-        name: 'AMR24',
-        driver: 'Fernando Alonso / Lance Stroll',
-        engine: 'Mercedes-AMG F1 M15 E Performance',
-        engineBrand: 'Mercedes',
-        color: '#006F62',
-        image: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1000&q=80',
-        specs: {
-          horsepower: 1028,
-          weight: 798,
-          topSpeed: 348,
-          zeroToHundred: 2.48,
-          downforce: 9.1,
-          drs: 9.2,
-          wins: 0
-        },
-        chassis: 'Monocasco ultracompacto optimizado para el canal de aire inferior y suspensión trasera de origen Mercedes.',
-        description: 'Monoplaza enfocado en maximizar la carga aerodinámica en clasificación y optimizar el frenado violento en curvas cerradas.'
-      }
-    ];
-
-    // ------------------------------------------------------------------
-    // DATABASE: V6 HYBRID ENGINE COMPONENTS
-    // ------------------------------------------------------------------
-    const ENGINE_COMPONENTS = [
-      {
-        id: 'ice',
-        name: 'ICE (Motor de Combustión Interna)',
-        power: '750+ HP',
-        desc: 'Motor térmico V6 de 1.6 litros a 90 grados con inyección directa a 500 bar de presión. Limitado a 15,000 RPM y flujo de combustible máximo de 100 kg/h.'
-      },
-      {
-        id: 'mguk',
-        name: 'MGU-K (Motor Generator Unit - Kinetic)',
-        power: '160 HP (120 kW)',
-        desc: 'Conectado directamente al cigüeñal. Recupera la energía cinética en las frenadas violentas y la inyecta de nuevo para aceleraciones brutales.'
-      },
-      {
-        id: 'mguh',
-        name: 'MGU-H (Motor Generator Unit - Heat)',
-        power: 'Ilimitado',
-        desc: 'Acoplado al turbocompresor. Convierte el calor de los gases de escape sobrantes en energía eléctrica, eliminando el turbolag.'
-      },
-      {
-        id: 'es',
-        name: 'ES (Energy Store / Batería)',
-        power: '4 MJ / vuelta',
-        desc: 'Batería de iones de litio de alta densidad que almacena la electricidad generada por el MGU-K y MGU-H para el despliegue de potencia.'
-      }
-    ];
-
-    // ------------------------------------------------------------------
-    // RENDER SHOWROOM CARS
-    // ------------------------------------------------------------------
-    function renderCars(carsToRender) {
-      const grid = document.getElementById('carsGrid');
-      grid.innerHTML = '';
-
-      if (carsToRender.length === 0) {
-        grid.innerHTML = `
-          <div class="col-span-full py-12 text-center bg-f1-card rounded-2xl border border-f1-border">
-            <i class="fa-solid fa-circle-info text-2xl text-gray-500 mb-2"></i>
-            <p class="text-gray-400 text-sm">No se encontraron monoplazas con los filtros seleccionados.</p>
-          </div>
-        `;
-        return;
-      }
-
-      carsToRender.forEach(car => {
-        const card = document.createElement('div');
-        card.className = 'bg-f1-card rounded-2xl border border-f1-border overflow-hidden hover:border-gray-600 transition-all duration-300 flex flex-col group';
-        card.innerHTML = `
-          <!-- Header -->
-          <div class="p-5 pb-3 flex justify-between items-start">
-            <div>
-              <span class="text-[10px] font-mono text-gray-400 uppercase tracking-widest block">${car.team}</span>
-              <h3 class="text-2xl font-black italic text-white group-hover:text-f1-red transition-colors">${car.name}</h3>
-            </div>
-            <span class="w-3.5 h-3.5 rounded-full border border-white/20 shadow-md" style="background-color: ${car.color}"></span>
-          </div>
-
-          <!-- Image -->
-          <div class="relative h-44 overflow-hidden bg-black/40">
-            <img src="${car.image}" alt="${car.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-            <div class="absolute inset-0 bg-gradient-to-t from-f1-card via-transparent to-transparent opacity-90"></div>
-            <div class="absolute bottom-3 left-4 right-4 flex justify-between text-xs font-mono text-gray-300">
-              <span>${car.driver.split('/')[0]}</span>
-              <span class="text-yellow-400 font-bold">${car.specs.horsepower} HP</span>
-            </div>
-          </div>
-
-          <!-- Quick Specs -->
-          <div class="p-5 pt-2 flex-grow space-y-4">
-            <p class="text-gray-400 text-xs line-clamp-2 leading-relaxed">${car.description}</p>
-            
-            <div class="grid grid-cols-2 gap-2 pt-2 border-t border-f1-border text-xs">
-              <div class="bg-f1-dark p-2 rounded-lg border border-f1-border">
-                <span class="text-gray-500 text-[9px] uppercase font-mono block">Velocidad Max</span>
-                <span class="font-bold text-white">${car.specs.topSpeed} km/h</span>
-              </div>
-              <div class="bg-f1-dark p-2 rounded-lg border border-f1-border">
-                <span class="text-gray-500 text-[9px] uppercase font-mono block">Aceleración</span>
-                <span class="font-bold text-white">${car.specs.zeroToHundred} s</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Button -->
-          <div class="p-4 pt-0">
-            <button 
-              onclick="openCarModal('${car.id}')"
-              class="w-full bg-f1-dark hover:bg-f1-red text-gray-200 hover:text-white font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 border border-f1-border hover:border-f1-red"
-            >
-              <i class="fa-solid fa-expand text-xs"></i>
-              <span>Ver Telemetría</span>
-            </button>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    // Filter Logic
-    function filterCars() {
-      const searchValue = document.getElementById('searchInput').value.toLowerCase();
-      const engineValue = document.getElementById('engineFilter').value;
-
-      const filtered = F1_CARS.filter(car => {
-        const matchesSearch = car.name.toLowerCase().includes(searchValue) ||
-                              car.team.toLowerCase().includes(searchValue) ||
-                              car.driver.toLowerCase().includes(searchValue);
-        const matchesEngine = engineValue === 'ALL' || car.engineBrand === engineValue;
-        return matchesSearch && matchesEngine;
-      });
-
-      renderCars(filtered);
-    }
-
-    // ------------------------------------------------------------------
-    // FRONT-TO-FRONT COMPARATOR LOGIC
-    // ------------------------------------------------------------------
-    function initComparatorSelectors() {
-      const selectA = document.getElementById('carASelect');
-      const selectB = document.getElementById('carBSelect');
-
-      selectA.innerHTML = '';
-      selectB.innerHTML = '';
-
-      F1_CARS.forEach((car, index) => {
-        const optA = document.createElement('option');
-        optA.value = car.id;
-        optA.textContent = `${car.team} - ${car.name}`;
-        selectA.appendChild(optA);
-
-        const optB = document.createElement('option');
-        optB.value = car.id;
-        optB.textContent = `${car.team} - ${car.name}`;
-        if (index === 1) optB.selected = true; // Select second car by default
-        selectB.appendChild(optB);
-      });
-
-      updateComparison();
-    }
-
-    function updateComparison() {
-      const carAId = document.getElementById('carASelect').value;
-      const carBId = document.getElementById('carBSelect').value;
-
-      const carA = F1_CARS.find(c => c.id === carAId);
-      const carB = F1_CARS.find(c => c.id === carBId);
-
-      const container = document.getElementById('comparisonBars');
-
-      const metrics = [
-        { label: 'Potencia Total (HP)', valA: carA.specs.horsepower, valB: carB.specs.horsepower, max: 1050, unit: ' HP' },
-        { label: 'Velocidad Máxima', valA: carA.specs.topSpeed, valB: carB.specs.topSpeed, max: 360, unit: ' km/h' },
-        { label: 'Aceleración 0-100 (Inverso)', valA: (3 - carA.specs.zeroToHundred).toFixed(2), valB: (3 - carB.specs.zeroToHundred).toFixed(2), rawA: carA.specs.zeroToHundred + ' s', rawB: carB.specs.zeroToHundred + ' s', max: 1 },
-        { label: 'Carga Aerodinámica (Downforce)', valA: carA.specs.downforce, valB: carB.specs.downforce, max: 10, unit: ' / 10' },
-        { label: 'Efectividad DRS', valA: carA.specs.drs, valB: carB.specs.drs, max: 10, unit: ' / 10' },
-        { label: 'Victorias en la Temporada', valA: carA.specs.wins, valB: carB.specs.wins, max: 20, unit: ' Victorias' }
-      ];
-
-      container.innerHTML = `
-        <div class="grid grid-cols-3 text-xs font-mono font-bold uppercase pb-3 border-b border-f1-border">
-          <div class="text-blue-400">${carA.name}</div>
-          <div class="text-center text-gray-400">Métrica</div>
-          <div class="text-right text-f1-red">${carB.name}</div>
-        </div>
-      `;
-
-      metrics.forEach(m => {
-        const pctA = Math.min((m.valA / m.max) * 100, 100);
-        const pctB = Math.min((m.valB / m.max) * 100, 100);
-
-        const textA = m.rawA || `${m.valA}${m.unit || ''}`;
-        const textB = m.rawB || `${m.valB}${m.unit || ''}`;
-
-        const isABetter = parseFloat(m.valA) >= parseFloat(m.valB);
-
-        container.innerHTML += `
-          <div class="space-y-1.5">
-            <div class="flex justify-between text-xs font-mono">
-              <span class="${isABetter ? 'text-blue-400 font-bold' : 'text-gray-400'}">${textA}</span>
-              <span class="text-gray-300 font-sans text-xs">${m.label}</span>
-              <span class="${!isABetter ? 'text-f1-red font-bold' : 'text-gray-400'}">${textB}</span>
-            </div>
-            <div class="grid grid-cols-2 gap-2 h-2.5 bg-f1-dark rounded-full overflow-hidden p-0.5 border border-f1-border">
-              <!-- Left Bar (Car A) -->
-              <div class="flex justify-end bg-gray-800 rounded-l-full overflow-hidden">
-                <div class="bg-blue-500 h-full rounded-l-full transition-all duration-500" style="width: ${pctA}%"></div>
-              </div>
-              <!-- Right Bar (Car B) -->
-              <div class="bg-gray-800 rounded-r-full overflow-hidden">
-                <div class="bg-f1-red h-full rounded-r-full transition-all duration-500" style="width: ${pctB}%"></div>
-              </div>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    // ------------------------------------------------------------------
-    // ENGINE COMPONENT SIMULATOR LOGIC
-    // ------------------------------------------------------------------
-    let activeEngineId = 'ice';
-
-    function renderEngineSimulator() {
-      const tabsContainer = document.getElementById('engineComponentTabs');
-      const displayContainer = document.getElementById('engineComponentDisplay');
-
-      tabsContainer.innerHTML = '';
-
-      ENGINE_COMPONENTS.forEach(comp => {
-        const isActive = comp.id === activeEngineId;
-        const btn = document.createElement('button');
-        btn.onclick = () => {
-          activeEngineId = comp.id;
-          renderEngineSimulator();
-        };
-        btn.className = `w-full text-left p-4 rounded-xl transition-all border ${
-          isActive 
-            ? 'bg-f1-red border-f1-red text-white shadow-lg shadow-f1-red/30 scale-[1.02]' 
-            : 'bg-f1-dark border-f1-border text-gray-300 hover:bg-gray-800'
-        }`;
-        btn.innerHTML = `
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-sm">${comp.name.split('(')[0]}</span>
-            <span class="text-xs font-mono opacity-80">${comp.power}</span>
-          </div>
-        `;
-        tabsContainer.appendChild(btn);
-      });
-
-      const current = ENGINE_COMPONENTS.find(c => c.id === activeEngineId);
-      displayContainer.innerHTML = `
-        <div>
-          <div class="flex items-center justify-between border-b border-f1-border pb-4 mb-4">
-            <h3 class="text-xl font-bold text-white flex items-center gap-2">
-              <i class="fa-solid fa-bolt text-f1-red"></i> ${current.name}
-            </h3>
-            <span class="bg-red-950/60 text-f1-red border border-red-800/40 text-xs font-mono px-3 py-1 rounded-full font-bold">
-              ${current.power}
-            </span>
-          </div>
-
-          <p class="text-gray-300 text-sm leading-relaxed mb-6">
-            ${current.desc}
-          </p>
-        </div>
-
-        <div class="bg-f1-card p-4 rounded-xl border border-f1-border text-xs font-mono text-gray-400 flex items-center gap-3">
-          <i class="fa-solid fa-shield-halved text-yellow-500 text-base"></i>
-          <span>Cumplimiento estricto con las regulaciones técnicas FIA de eficiencia energética.</span>
-        </div>
-      `;
-    }
-
-    // ------------------------------------------------------------------
-    // MODAL LOGIC
-    // ------------------------------------------------------------------
-    function openCarModal(carId) {
-      const car = F1_CARS.find(c => c.id === carId);
-      if (!car) return;
-
-      document.getElementById('modalTeam').innerText = car.team;
-      document.getElementById('modalName').innerText = car.name;
-      document.getElementById('modalImage').src = car.image;
-      document.getElementById('modalDrivers').innerText = car.driver;
-      document.getElementById('modalEngine').innerText = car.engine;
-      document.getElementById('modalDescription').innerText = car.description;
-      document.getElementById('modalHp').innerText = car.specs.horsepower + ' HP';
-      document.getElementById('modalSpeed').innerText = car.specs.topSpeed + ' km/h';
-      document.getElementById('modalAccel').innerText = car.specs.zeroToHundred + ' s';
-      document.getElementById('modalWins').innerText = car.specs.wins + ' Victoria(s)';
-      document.getElementById('modalChassis').innerText = car.chassis;
-
-      document.getElementById('modalDownforceVal').innerText = car.specs.downforce + ' / 10';
-      document.getElementById('modalDownforceBar').style.width = (car.specs.downforce * 10) + '%';
-
-      document.getElementById('modalDrsVal').innerText = car.specs.drs + ' / 10';
-      document.getElementById('modalDrsBar').style.width = (car.specs.drs * 10) + '%';
-
-      const modal = document.getElementById('carModal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-
-    function closeCarModal() {
-      const modal = document.getElementById('carModal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-
-    // Close modal on background click
-    document.getElementById('carModal').addEventListener('click', (e) => {
-      if (e.target === document.getElementById('carModal')) {
-        closeCarModal();
-      }
-    });
-
-    // ------------------------------------------------------------------
-    // INITIALIZATION ON LOAD
-    // ------------------------------------------------------------------
-    window.onload = function() {
-      renderCars(F1_CARS);
-      initComparatorSelectors();
-      renderEngineSimulator();
-    };
-  </script>
 </body>
 </html>
